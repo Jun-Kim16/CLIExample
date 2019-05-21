@@ -1,5 +1,7 @@
 package edu.handong.csee.java.examples;
 
+import java.io.File;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -12,6 +14,7 @@ public class Runner {
 	String path;
 	boolean verbose;
 	boolean help;
+	boolean full;
 
 	public static void main(String[] args) {
 
@@ -33,12 +36,23 @@ public class Runner {
 			System.out.println("You provided \"" + path + "\" as the value of the option p");
 			
 			// TODO show the number of files in the path
+			File file = new File(path);
+			System.out.println(file.listFiles().length+"\n");
+			
 			
 			if(verbose) {
-				
+				System.out.println("files :");
 				// TODO list all files in the path
+				for(File a : file.listFiles())
+					System.out.print(a.getName()+" ");
+				System.out.println("\n");
 				
-				System.out.println("Your program is terminated. (This message is shown because you turned on -v option!");
+			}
+			if(full) {
+				System.out.println("full path of files :");
+				for(File a : file.listFiles())
+					System.out.println(a.getAbsolutePath());
+				
 			}
 		}
 	}
@@ -53,7 +67,8 @@ public class Runner {
 			path = cmd.getOptionValue("p");
 			verbose = cmd.hasOption("v");
 			help = cmd.hasOption("h");
-
+			full = cmd.hasOption("f");
+			
 		} catch (Exception e) {
 			printHelp(options);
 			return false;
@@ -73,12 +88,17 @@ public class Runner {
 				.argName("Path name to display")
 				.required()
 				.build());
+		
+		options.addOption(Option.builder("f").longOpt("fullpath")
+				.desc("Display fullpath of the files in set path")
+				//.argName("Path name to display")
+				.build());
 
 		// add options by using OptionBuilder
 		options.addOption(Option.builder("v").longOpt("verbose")
 				.desc("Display detailed messages!")
 				//.hasArg()     // this option is intended not to have an option value but just an option
-				.argName("verbose option")
+				//.argName("verbose option")
 				//.required() // this is an optional option. So disabled required().
 				.build());
 		
